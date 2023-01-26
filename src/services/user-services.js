@@ -20,4 +20,8 @@ export class UserService {
   async update(id, user) {
     return await UserModel.updateOne({ _id: ObjectId(id) }, user);
   }
+
+  async delete(id) {
+    return await UserModel.deleteOne({ _id: ObjectId(id) });
+  }
 }

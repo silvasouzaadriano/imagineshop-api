@@ -51,6 +51,17 @@ app.put('/users/:id', async (req, res) => {
   return res.status(404).json({ message: 'Usuário não encontrado!'});
 })
 
+app.delete('/users/:id', async (req, res) => {
+  const id = req.params;
+  const userService = new UserService();
+  const user = await userService.findById(id);
+  if (user) {
+    await userService.delete(id);
+    return res.status(200).json({ message: 'Usuário excluído com sucesso!'});
+  }
+  return res.status(404).json({ message: 'Usuário não encontrado!' });
+})
+
 
 app.listen(port, () => {
   console.log(`ImagineShop app listening on port ${port}`)
