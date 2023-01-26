@@ -17,4 +17,7 @@ export class UserService {
     return await UserModel.findById(ObjectId(id));
   }
 
+  async update(id, user) {
+    return await UserModel.updateOne({ _id: ObjectId(id) }, user);
+  }
 }
