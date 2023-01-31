@@ -24,4 +24,23 @@ export class UserService {
   async delete(id) {
     return await UserModel.deleteOne({ _id: ObjectId(id) });
   }
+
+  async findByEmail(email) {
+    return await UserModel.findOne({ email });
+  }
+
+  async login(email, password) {
+    if (email, password) {
+      const user = await this.findByEmail(email);
+      if (user) {
+        const auth = user.password === password
+        if (auth) {
+          return user;
+        }
+        return null
+       }
+      return null
+    }
+    return null;
+  }
 }
