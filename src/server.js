@@ -1,7 +1,8 @@
 import 'dotenv/config';
-import express from 'express'
-import { ReturnDocument } from 'mongodb';
+import express, { request } from 'express'
 
+import { validateFieldsRequired } from './middlewares/validationsMiddleware.js';
+import { authMiddleware } from './middlewares/authMiddleware.js';
 import { UserService } from './services/user-services.js';
 
 const app = express()
@@ -9,12 +10,28 @@ const port = 3333
 
 app.use(express.json())
 
+const token = [
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9',
+  'eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyLCJ1c2VycyI6IjExMjEyIn0',
+  'rObM9uqYln4a_8B2DQVcwD1r0qI-6pERcJx6OmkW7-k'
+]
+
 
 app.get('/', async (req, res) => {
   res.send('IMAGINE SHOP')
 })
 
-app.post('/users', async (req, res) => {
+app.post('/login', async (req, res) => {
+  const { email, password } = req.body;
+  const userService = new UserService();
+  const userLogged = await userService.login(email, password);
+  if (userLogged) {
+    return res.status(200).json(userLogged);
+  }
+  return res.status(400).json({ message: "E-mail ou senha inválidos!"});
+})
+
+app.post('/users', validateFieldsRequired, async (req, res) => {
   const { name, email, password } = req.body;
   const user = { name, email, password };
   const userService = new UserService();
@@ -22,13 +39,14 @@ app.post('/users', async (req, res) => {
   return res.status(201).json(user);
 })
 
-app.get('/users', async (req, res) => {
+
+app.get('/users', async (req, res, next) => {
   const userService = new UserService();
   const users = await userService.findAll();
   return res.status(200).json(users)
 })
 
-app.get('/users/:id', async (req, res) => {
+app.get('/users/:id', authMiddleware,  async (req, res) => {
   const id = req.params;
   const userService = new UserService();
   const user = await userService.findById(id);
