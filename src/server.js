@@ -19,9 +19,16 @@ app.post('/login', async (req, res) => {
   const { email, password } = req.body;
   const userService = new UserService();
   const userLogged = await userService.login(email, password);
+
+  /* const fakeUser = 
+  {
+    name: 'Ranayke Boni',
+    email: 'fake_user@imagine.com.br'
+  } */
+
   if (userLogged) {
     const secretKey = process.env.SECRET_KEY
-    const token = jwt.sign({ user: userLogged }, secretKey, { expiresIn: "3600s"})
+    const token = jwt.sign({ user: userLogged }, secretKey, { expiresIn: "1h"})
     return res.status(200).json({ token } );
   }
   return res.status(400).json({ message: "E-mail ou senha inválidos!"});
@@ -35,6 +42,7 @@ app.post('/users', validateFieldsRequired, async (req, res) => {
   return res.status(201).json(user);
 })
 
+app.use(authMiddleware);
 
 app.get('/users', async (req, res, next) => {
   const userService = new UserService();
@@ -42,7 +50,7 @@ app.get('/users', async (req, res, next) => {
   return res.status(200).json(users)
 })
 
-app.get('/users/:id', authMiddleware,  async (req, res) => {
+app.get('/users/:id',  async (req, res) => {
   const id = req.params;
   const userService = new UserService();
   const user = await userService.findById(id);
