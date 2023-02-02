@@ -1,5 +1,6 @@
 import 'dotenv/config';
 import express, { request } from 'express'
+import jwt from 'jsonwebtoken';
 
 import { validateFieldsRequired } from './middlewares/validationsMiddleware.js';
 import { authMiddleware } from './middlewares/authMiddleware.js';
@@ -10,13 +11,6 @@ const port = 3333
 
 app.use(express.json())
 
-const token = [
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9',
-  'eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyLCJ1c2VycyI6IjExMjEyIn0',
-  'rObM9uqYln4a_8B2DQVcwD1r0qI-6pERcJx6OmkW7-k'
-]
-
-
 app.get('/', async (req, res) => {
   res.send('IMAGINE SHOP')
 })
@@ -26,7 +20,9 @@ app.post('/login', async (req, res) => {
   const userService = new UserService();
   const userLogged = await userService.login(email, password);
   if (userLogged) {
-    return res.status(200).json(userLogged);
+    const secretKey = process.env.SECRET_KEY
+    const token = jwt.sign({ user: userLogged }, secretKey, { expiresIn: "3600s"})
+    return res.status(200).json({ token } );
   }
   return res.status(400).json({ message: "E-mail ou senha inválidos!"});
 })
