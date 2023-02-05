@@ -20,12 +20,6 @@ app.post('/login', async (req, res) => {
   const userService = new UserService();
   const userLogged = await userService.login(email, password);
 
-  /* const fakeUser = 
-  {
-    name: 'Ranayke Boni',
-    email: 'fake_user@imagine.com.br'
-  } */
-
   if (userLogged) {
     const secretKey = process.env.SECRET_KEY
     const token = jwt.sign({ user: userLogged }, secretKey, { expiresIn: "1h"})
