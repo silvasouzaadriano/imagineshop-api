@@ -7,7 +7,7 @@ import { authMiddleware } from './middlewares/authMiddleware.js';
 import { UserService } from './services/user-services.js';
 
 const app = express()
-const port = process.env.PORT || 3333
+const port = process.env.PORT || 8080
 
 app.use(express.json())
 
