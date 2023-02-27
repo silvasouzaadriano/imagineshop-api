@@ -1,6 +1,9 @@
 import 'dotenv/config';
 import express, { request } from 'express'
 import jwt from 'jsonwebtoken';
+import multer from 'multer';
+import crypto from 'crypto';
+import { extname } from 'path';
 
 import { validateFieldsRequired } from './middlewares/validationsMiddleware.js';
 import { authMiddleware } from './middlewares/authMiddleware.js';
@@ -10,7 +13,23 @@ import { UserService } from './services/user-services.js';
 const app = express()
 const port = process.env.PORT || 8080
 
+const storage = multer.diskStorage(
+  {
+    destination: (req, file, cb) => {
+      cb(null, 'uploads/')
+    },
+    filename: (req, file, cb) => {
+      const newFilename = crypto.randomBytes(32).toString('hex');
+      const fileExtension = extname(file.originalname);
+      cb(null, `${newFilename}${fileExtension}`);
+    }
+  }
+);
+
+const uploadMiddleware = multer({ storage });
+
 app.use(express.json())
+app.use(express.urlencoded( {extended: true }));
 
 app.get('/', async (req, res) => {
   res.send('IMAGINE SHOP')
@@ -44,6 +63,7 @@ app.get('/products', async (req, res, next) => {
   return res.status(200).json(products)
 })
 
+app.use('/uploads', express.static('uploads'));
 
 app.use(authMiddleware);
 
@@ -87,9 +107,10 @@ app.delete('/users/:id', async (req, res) => {
   return res.status(404).json({ message: 'Usuário não encontrado!' });
 })
 
-app.post('/products', async (req, res) => {
+app.post('/products', uploadMiddleware.single('image'), async (req, res) => {
   const { name, description, price, summary, stock } = req.body;
-  const product = { name, description, price, summary, stock };
+  const fileName = req.file.filename
+  const product = { name, description, price, summary, stock, fileName };
   const productService = new ProductService();
   await productService.create(product);
   return res.status(201).json(product);
