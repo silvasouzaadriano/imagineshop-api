@@ -34,11 +34,12 @@ Unhappy Path
 ### MONGODB
 
 1. Adicionar o IP global no mongoDB Atlas
-   1. Com o Cluster aberto, clique no lado direito Network Access
-   2. Com o Network Access aberto, clique no botão + ADD IP ADDRESS
-   3. No campo Access List Entry, adicione o IP: 0.0.0.0/0
-   4. Não precisa de comentário
-   5. Clique no botão Confirm
+   1. Após se logar no no site mongodb.com
+   2. Com o Cluster aberto, clique no lado esquerdo em "Network Access"
+   3. Com o "Network Access" aberto, clique no botão + ADD IP ADDRESS
+   4. No campo "Access List Entry", adicione o IP: 0.0.0.0/0
+   5. Não precisa de comentário no campo "Comments"
+   6. Clique no botão "Confirm"
 
 ### ALTERAÇÕES LOCAIS
   
@@ -50,24 +51,32 @@ Unhappy Path
          1. "dev": "nodemon src/server.js"
       2. Alterar o script start removendo nodemon e adicionando node, como abaixo
          1. "start": "node src/server.js",
-   2. Se ainda tiver, com base no arquivo .env.sample, criar um arquivo .env com as seguintes variáves
+   2. Se ainda não tiver criado, com base no arquivo .env.sample, criar um arquivo .env com as seguintes variáves
       1. MONGODB_URL = "mongodb+srv://<username>:<password>@cluster0.phugsom.mongodb.net/<dbName>?retryWrites=true&w=majority"
       2. SECRET_KEY = "imagineSchool"
       3. PORT=8080
-      ### IMPORTANTE: Não esquecer de colocar o username, password e dbName na variável MONGODB_URL
+      ### IMPORTANTE: Não esquecer de colocar o username, password e dbName na variável MONGODB_URL de acordo com o seu DB
    3. Alterar o arquivo server.js
       1. Onde é declarada a const port, mudar a linha conforme abaixo
          1. const port = process.env.PORT || 8080
    
 ### FLY.IO - LOGIN/INSTALAÇÃO
 
+  REFERÊNCIA: https://fly.io/docs/hands-on/install-flyctl/
+
   1. Logar-se no github
   2. Logar-se no site fly.io utilizando a autenticação social do github
-  3. Instalar localmente flyctl (Mac, Linux, Windwos) utilizando o guia: https://fly.io/docs/hands-on/install-flyctl/
+  3. Instalar localmente
+  4. No seu terminal, seguindo as instruções conforme link de referência
+     
+
+ 
 
 ### FLY.IO - LAUNCH/DEPLOYMENT
 
-  Utilizando como referência o documento https://fly.io/docs/languages-and-frameworks/node/#install-flyctl-and-login, a partir do passo "Launch the App on Fly", executar os passos abaixo
+  REFERÊNCIA: 
+https://fly.io/docs/languages-and-frameworks/node/#launch-the-app-on-fly
+  Utilizando como referência o documento acima, a partir do passo "Launch the App on Fly", executar os passos abaixo
 
   1. Mantenha-se na branch master ou main
   2. Execute o comando: flyctl launch
@@ -79,7 +88,7 @@ Unhappy Path
         2. São Paulo
      4. Em "Would you like to set up a Postgresql database now?", escolha N
      5. Em "Would you like to set up an Upstash Redis database now?", escolha N
-     6. Tudo dando certo, é para mostrar uma mensagem parecida com a abaixo
+     6. Tudo dando certo, é para mostrar uma mensagem parecida como a abaixo
 
      
       "Your Node app is prepared for deployment.  Be sure to set your listen port
@@ -92,15 +101,23 @@ Unhappy Path
       need help, please post on https://community.fly.io.
 
       Now: run 'fly deploy' to deploy your Node app."
-  3. Execute o comando: flyctl deploy ou fly deploy e aguarde alguns minutos.
-     1. Caso tudo dê certo, algo como abaixo deve ser mostrado na tela
+  3. Execute o comando flyctl deploy ou fly deploy para realizar o deployment da aplicação.
+     1. Aguarde alguns minutos.
+     2. Caso tudo dê certo, algo como abaixo deve ser mostrado na tela
    
         1 desired, 1 placed, 1 healthy, 0 unhealthy [health checks: 1 total, 1 passing]
         --> v0 deployed successfully
 
-  4. Após finalizar o passo anterior, verifique o status com o comando
-     1. flyctl status (ele deve ser running)
-  5. Para executar a API e saber qual a URL da mesma, execute o comando abaixo
-     1. flyctl open
-     2. A API deve ser aberta no browser com sucesso mostrando a mensage "IMAGINE SHOP"
+  4. Após finalizar o passo anterior, verifique o status com o comando flyctl status
+     1. O status esperado é "running"
+  5. Para executar a API e saber qual a URL da mesma, execute o comando flyctl open
+     1. Espere alguns instantes
+     2. A API deve ser aberta no browser com sucesso mostrando a mensagem "IMAGINE SHOP"
+     3. Caso ela não abra no Chrome
+        1. Limpe o cache, feche e abra o navegador novamente OU
+        2. tente abrir no Firefox ou no Edge
+     4. Tente abrir no Insomnia também
+     5. Lembre-se de utilizar https principalmente no Insomnia, para cada endpoint
+        
+        IMPORTANTE: Embora o fly mostre http, no browser ele redireciona para https
      
