@@ -37,6 +37,14 @@ app.post('/users', validateFieldsRequired, async (req, res) => {
   return res.status(201).json(user);
 })
 
+
+app.get('/products', async (req, res, next) => {
+  const productService = new ProductService();
+  const products = await productService.findAll();
+  return res.status(200).json(products)
+})
+
+
 app.use(authMiddleware);
 
 app.get('/users', async (req, res, next) => {
