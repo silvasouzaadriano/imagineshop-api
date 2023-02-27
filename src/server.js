@@ -4,6 +4,7 @@ import jwt from 'jsonwebtoken';
 
 import { validateFieldsRequired } from './middlewares/validationsMiddleware.js';
 import { authMiddleware } from './middlewares/authMiddleware.js';
+import { ProductService } from './services/product-service.js';
 import { UserService } from './services/user-services.js';
 
 const app = express()
@@ -22,7 +23,7 @@ app.post('/login', async (req, res) => {
 
   if (userLogged) {
     const secretKey = process.env.SECRET_KEY
-    const token = jwt.sign({ user: userLogged }, secretKey, { expiresIn: "1h"})
+    const token = jwt.sign({ user: userLogged }, secretKey, { expiresIn: "1d"})
     return res.status(200).json({ token } );
   }
   return res.status(400).json({ message: "E-mail ou senha inválidos!"});
@@ -76,6 +77,14 @@ app.delete('/users/:id', async (req, res) => {
     return res.status(200).json({ message: 'Usuário excluído com sucesso!'});
   }
   return res.status(404).json({ message: 'Usuário não encontrado!' });
+})
+
+app.post('/products', async (req, res) => {
+  const { name, description, price, summary, stock } = req.body;
+  const product = { name, description, price, summary, stock };
+  const productService = new ProductService();
+  await productService.create(product);
+  return res.status(201).json(product);
 })
 
 
