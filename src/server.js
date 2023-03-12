@@ -63,6 +63,16 @@ app.get('/products', async (req, res, next) => {
   return res.status(200).json(products)
 })
 
+app.get('/products/:id',  async (req, res) => {
+  const id = req.params;
+  const productService = new ProductService();
+  const product = await productService.findById(id);
+  if (product) {
+    return res.status(200).json(product);
+  }
+  return res.status(404).json({ message: 'Produto não encontrado!'});
+})
+
 app.use('/uploads', express.static('uploads'));
 
 app.use(authMiddleware);
