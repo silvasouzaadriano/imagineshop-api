@@ -131,6 +131,15 @@ app.post('/products', uploadMiddleware.single('image'), async (req, res) => {
   return res.status(201).json(product);
 })
 
+app.post('/products/sell', async (req, res) => {
+  const { products } = req.body;
+  const productService = new ProductService();
+  for (const product of products) {
+    await productService.sellProducts(product);
+  }
+  return res.status(200).json({ message: 'success' });
+});
+
 
 app.listen(port, () => {
   console.log(`ImagineShop app listening on port ${port}`)
