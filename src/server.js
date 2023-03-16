@@ -4,11 +4,15 @@ import jwt from 'jsonwebtoken';
 import multer from 'multer';
 import crypto from 'crypto';
 import { extname } from 'path';
+import cors from 'cors';
+
 
 import { validateFieldsRequired } from './middlewares/validationsMiddleware.js';
 import { authMiddleware } from './middlewares/authMiddleware.js';
 import { ProductService } from './services/product-service.js';
 import { UserService } from './services/user-services.js';
+
+
 
 const app = express()
 const port = process.env.PORT || 8080
@@ -28,6 +32,7 @@ const storage = multer.diskStorage(
 
 const uploadMiddleware = multer({ storage });
 
+app.use(cors());
 app.use(express.json())
 app.use(express.urlencoded( {extended: true }));
 
